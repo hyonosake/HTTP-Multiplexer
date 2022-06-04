@@ -7,5 +7,6 @@ type Env struct {
 	PoolWorkersSize    int
 	URLAmountLimit     int
 	URLQueryTimeout    time.Duration
+	ShutdownTimeout    time.Duration
 	Port               int
 }

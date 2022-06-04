@@ -1,6 +1,6 @@
 package server
 
-//go:generate mockery --case underscore --name Worker
+//go:generate mockery --case underscore --name Handler
 
 import (
 	"context"
@@ -9,6 +9,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 	"time"
 
 	b64 "encoding/base64"
@@ -18,14 +19,15 @@ import (
 	"go.uber.org/zap"
 )
 
-type App interface {
-	Run(ctx context.Context)
+type Handler interface {
+	Handle(ctx context.Context)
 }
 
 type Server struct {
+	Cfg    *types.Env
+	ctx    context.Context
 	mux    *http.ServeMux
 	logger *zap.Logger
-	cfg    *types.Env
 	m      workers.Worker
 }
 
@@ -46,7 +48,7 @@ func New(_ context.Context) (s *Server, err error) {
 	return &Server{
 		logger: lg,
 		mux:    sMux,
-		cfg:    cfg,
+		Cfg:    cfg,
 		m:      w,
 	}, nil
 }
@@ -60,11 +62,14 @@ func (s *Server) sendResponse(w http.ResponseWriter, resp *types.MultiplyRespons
 	w.Write(bytez)
 }
 
-func (s *Server) Run(_ context.Context) {
-	s.mux.HandleFunc("/multiply", s.handleMultiply)
-	if err := http.ListenAndServe(":80", s.mux); err != nil {
-		s.logger.Fatal("Server down: ", zap.Error(err))
-	}
+func (s *Server) Handle(ctx context.Context) {
+	go func() {
+		s.mux.HandleFunc("/multiply", s.handleMultiply)
+		if err := http.ListenAndServe(":"+strconv.Itoa(s.Cfg.Port), s.mux); err != nil {
+			s.logger.Fatal("Server down: ", zap.Error(err))
+		}
+	}()
+	s.logger.Info("Server started", zap.Ints("ports", []int{s.Cfg.Port}))
 }
 
 func (s *Server) parseConfig() (*types.Env, error) {
@@ -72,6 +77,7 @@ func (s *Server) parseConfig() (*types.Env, error) {
 		PoolWorkersSize: 100,
 		URLAmountLimit:  4,
 		URLQueryTimeout: time.Second,
+		ShutdownTimeout: time.Second * 5,
 		Port:            1234,
 	}, nil
 }

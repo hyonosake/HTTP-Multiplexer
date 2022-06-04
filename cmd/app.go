@@ -3,17 +3,19 @@ package main
 import (
 	"context"
 	"log"
+	"os/signal"
+	"syscall"
 
-	"github.com/hyonosake/HTTP-Multiplexer/internal/server"
+	app "github.com/hyonosake/HTTP-Multiplexer/internal/app"
 )
 
 func main() {
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-	s, err := server.New(ctx)
+	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	defer stop()
+	a, err := app.NewService(ctx)
 	if err != nil {
-		log.Fatalf("Unable to craete server: %v\n", err)
+		log.Fatalf("Unable to craete app: %v\n", err)
 	}
-	s.Run(ctx)
+	a.Run(ctx)
 
 }
