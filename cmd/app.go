@@ -6,7 +6,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	app "github.com/hyonosake/HTTP-Multiplexer/internal/app"
+	"github.com/hyonosake/HTTP-Multiplexer/internal/app"
 )
 
 func main() {

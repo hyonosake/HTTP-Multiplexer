@@ -16,12 +16,15 @@ func NewCloser() *AppCLoser {
 	return &AppCLoser{mut: &sync.RWMutex{}}
 }
 
+// Add is used to add Closer function that will be triggered on server shutdown
 func (c *AppCLoser) Add(f func() error) {
 	c.mut.Lock()
 	defer c.mut.Unlock()
 	c.closerFuncs = append(c.closerFuncs, f)
 }
 
+// Close triggers when server should be stopped and calls all functions that were provided to AppCloser with Add method.
+// All functions are called in order they were added to provide more control over shutdown execution
 func (c *AppCLoser) Close(ctx context.Context) error {
 	c.mut.Lock()
 	defer c.mut.Unlock()
