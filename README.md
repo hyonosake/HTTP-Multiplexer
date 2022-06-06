@@ -5,7 +5,7 @@
 # API Description
 ## 1. Get info from provided URls
 #### The one and only endpoint 
-#### Query: Header ```POST ServiceURL/multiply ```
+#### Query: ```POST ServiceURL/multiply ```
 #### Body: 
 ```
 {
