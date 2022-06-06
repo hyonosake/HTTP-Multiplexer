@@ -1,11 +1,11 @@
 # Start from golang base image
 FROM golang:alpine as builder
 
-WORKDIR go/src/github.com/APIserver
+WORKDIR go/src/github.com/http_multiplexer
 
 # Enable go modules
 ENV GO111MODULE=on
-#ENV GOPATH=go/src/github.com/APIserver
+#ENV GOPATH=go/src/github.com/http_multiplexer
 
 # Install git.
 RUN apk update && apk add --no-cache git
@@ -21,8 +21,8 @@ RUN go mod download
 COPY . .
 
 # Build the application.
-RUN go build -o $PWD/bin/server $PWD/cmd
+RUN go build -o $PWD/bin/app $PWD/cmd
 
 
 
-CMD ["./bin/server"]
+CMD ["./bin/app"]

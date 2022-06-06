@@ -1,6 +1,8 @@
 package types
 
-import "time"
+import (
+	"time"
+)
 
 type Env struct {
 	MaxParallelQueries int
@@ -12,6 +14,22 @@ type Env struct {
 }
 
 func ParseConfig() (*Env, error) {
+
+	//configPath := "values.yaml"
+	//// Open config file
+	//file, err := os.Open(configPath)
+	//if err != nil {
+	//	return nil, err
+	//}
+	//defer file.Close()
+	//
+	//// Init new YAML decode
+	//d := yaml.NewDecoder(file)
+	//var env = new(Env)
+	//// Start YAML decoding from file
+	//if err := d.Decode(env); err != nil {
+	//	return nil, err
+	//}
 	return &Env{
 
 		MaxParallelQueries: 4,

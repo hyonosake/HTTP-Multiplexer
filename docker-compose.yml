@@ -1,26 +1,12 @@
 version: "3.9"
 services:
-  database:
-    container_name: PG_base
-    image: postgres:14.1
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    volumes:
-      - ./db:/docker-entrypoint-initdb.d/
-    ports:
-      - ${PG_PORT}
   server:
-    container_name: API_server
+    container_name: HTTP-Multiplexer
     build:
       context: .
       dockerfile: Dockerfile
-    env_file: .env
-    depends_on:
-      - database
     networks:
       - default
     restart: on-failure
     ports:
-      - "8080:80"
+      - "1234:1234"
