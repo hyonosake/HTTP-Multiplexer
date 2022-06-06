@@ -56,6 +56,7 @@ Consists of ```Bad Request``` Header and empty JSON body
 ```
 # Service features
  - Service handles requests consisting of 20 URLs at max. Otherwise it will return a corresponding ErrMessage in JSON.
+ - Response from provided URLs from request is encoded using Base64.
  - Service handles 100 concurrent incoming requests at max. The rest of requests will wait in queue.
  - Service handles 4 concurrent outgoing requests per provided URL at max. The rest of requests will wait in queue.
  - Service timeout on each outgoing URL request is set to 1 second
